@@ -7,6 +7,6 @@ chessBoard.PrintBoard();
 //chessBoard.MovePiece(0, 28);
 Console.WriteLine("\n");
 chessBoard.PrintBoard();
-Utils.GetVertHoriMoves(chessBoard, 0);
+Utils.GetVertHoriMoves(chessBoard, 56);
 Console.ReadLine();
 

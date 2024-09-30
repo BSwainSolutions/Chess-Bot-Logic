@@ -10,6 +10,10 @@ namespace ChessBotBackEnd.Helpers
 {
     internal class Utils
     {
+
+        //Direction of Horizontal And Vetical Moves //
+       
+
         public static List<Move> LegalMoves(Board chessBoard)
         {
             List<Move> moves = new List<Move>();
@@ -31,32 +35,42 @@ namespace ChessBotBackEnd.Helpers
             return moves;
         }
 
-        public static int[] GetVertHoriMoves(Board board, int Piece)
+        public static int[] GetVertHoriMoves(Board board, int Pos)
         {
             // A piece moving sideways can move +1 to a maximum of 7
             // can move -1 to a minimum of 0
             // can move +8 a maximum of 7 times 
             // can move -8 a maximum of 7 times
             List<int> moves = new List<int>();
-            int[] possibleWays = { 1, -1, 8, -8 };
-            int CurrentRow = Piece / 8;
-            int CurrentCol = Piece % 8;
+            int CurrentRow = Pos / 8;
+            int CurrentCol = Pos % 8;
+            int[] possibleWays;
+            switch ((board.getSquare(Pos) % 8))
+            {
+                case (int)PieceType.Bishop:
+                    // make possible moves int[] contains diagonal moves
+                    possibleWays = new int[] { 7,-7,9,-9 };
+                    break;
+                case (int)PieceType.Rook:
+                    possibleWays = new int[] {-1,-1,8,-8};
+                    break;
+                case (int)PieceType.Queen:
+                    possibleWays = new int[] {-1, -1, 8, -8, 7, -7, 9, -9};
+                    break;
+                //if not any of these types then other movement logic is required //
+                default:
+                    possibleWays = new int[] { 0 };
+                    break;
+            }
 
-            // to move sideways, the piece must have a free square
-            // and must not be being blocked by any piece
-            // and if its an opposing piece it can move and take that but not any further
 
-            //calculate the distance from this position to the edges
-            
-
-            //for each different way
             foreach (int direction in possibleWays)
             {
                 //to a maximum of seven times// 
                 // start at 1 end at 7
                 for (int i = 1; i < 8; i++)
                 {
-                    int target = Piece + (direction * i);
+                    int target = Pos + (direction * i);
 
                     //dont check any more in that direction if is already outof bounds
                     if (target > 63 || target < 0) break;
@@ -64,9 +78,14 @@ namespace ChessBotBackEnd.Helpers
                     int targetRow = target / 8;
                     int targetCol = target % 8;
 
+                    //horizontal wrap check
                     if (direction == 1 && targetRow != CurrentRow)  break;
                     if (direction == -1 && targetRow != CurrentRow) break;
 
+                    //diagonal wrap check 
+                    if ((direction == 7 || direction == -9) && targetCol <= CurrentCol) break; 
+                    if ((direction == 9 || direction == -7) && targetCol >= CurrentCol) break;
+                    
                     //if its not empty check its not its own piece and break from this direction
                     if (board.getSquare(target) != 0)
                     {
@@ -86,12 +105,8 @@ namespace ChessBotBackEnd.Helpers
                     moves.Add(target);
                 }
 
-
             }
-
-            
             return moves.ToArray();
-
         }
 
     }
