@@ -2,11 +2,10 @@
 using ChessBotBackEnd.Helpers;
 using System.Net;
 
-Board chessBoard = new Board("///3Q4////");
-chessBoard.PrintBoard2();
-//chessBoard.MovePiece(0, 28);
+Board chessBoard = new Board("///2pQ4////");
+chessBoard.PrintBoard();
 Console.WriteLine("\n");
-chessBoard.PrintBoard2();
+chessBoard.NumberPrint();
 Utils.GetSlidingMoves(chessBoard, 27);
 Console.ReadLine();
 

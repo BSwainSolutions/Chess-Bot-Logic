@@ -199,7 +199,7 @@ namespace ChessBotBackEnd.BoardAndPieces
             }
         }
 
-        public void PrintBoard2()
+        public void NumberPrint()
         {
             for (int i = 63; i >= 0; i--)
             {
@@ -253,7 +253,7 @@ namespace ChessBotBackEnd.BoardAndPieces
                     default:
                         break;
                 }
-                Console.Write(i.ToString().PadLeft(5));
+                Console.Write(i.ToString().PadRight(5));
 
                 if (i % 8 == 0)  // End the row and start a new one
                 {
