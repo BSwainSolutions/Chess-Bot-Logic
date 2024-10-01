@@ -105,5 +105,48 @@ namespace ChessBotBackEnd.Helpers
 
             return moves.ToArray();
         }
+
+        public static int[] GetKnightHops(Board board, int Pos)
+        {
+            List<int> moves = new List<int>();
+
+            // Define all possible knight move offsets
+            int[] knightOffsets = { 15, 17, 10, 6, -15, -17, -10, -6 };
+
+            int currentRow = Pos / 8;
+            int currentCol = Pos % 8;
+
+            foreach (int offset in knightOffsets)
+            {
+                int target = Pos + offset;
+
+                // Out of bounds check
+                if (target < 0 || target > 63)
+                    continue;
+
+                int targetRow = target / 8;
+                int targetCol = target % 8;
+
+                // Check for horizontal or vertical wrapping (i.e., moving from one edge to another)
+                if (Math.Abs(currentRow - targetRow) > 2 || Math.Abs(currentCol - targetCol) > 2)
+                    continue;
+
+                // If the square is occupied by a friendly piece, ignore it
+                int pieceAtTarget = board.getSquare(target);
+                if (pieceAtTarget != 0)
+                {
+                    if ((board.getTurn() == (int)PieceColour.White && pieceAtTarget > (int)PieceColour.Black) ||
+                        (board.getTurn() == (int)PieceColour.Black && pieceAtTarget <= (int)PieceColour.Black))
+                    {
+                        continue; // Can't move to a square occupied by a friendly piece
+                    }
+                }
+
+                // Add valid move
+                moves.Add(target);
+            }
+
+            return moves.ToArray();
+        }
     }
 }
