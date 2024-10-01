@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,21 +18,46 @@ namespace ChessBotBackEnd.Helpers
         public static List<Move> LegalMoves(Board chessBoard)
         {
             List<Move> moves = new List<Move>();
-            int[] board = chessBoard.getBoard();
 
-            foreach(int i in board)
+            //for each square on the board
+            foreach(int i in chessBoard.getBoard())
             {
+                //get its piecetype to switch on
+                int piece = i % 8;
+                
                 switch (i)
                 {
                     case 0:
+                        //do nothing 
                         break;
                     case (int)PieceType.Pawn:
+                        // get pawn moves
+                        AddMoves(GetPawnMoves(chessBoard, i), moves, i); 
+                        break;  
+                    case (int)PieceType.Rook:
+                        //get rook moves
+                        AddMoves(GetSlidingMoves(chessBoard, i), moves, i);
+                        break;
+                    case (int)PieceType.Bishop:
+                        //get Bishop Moves
+                        AddMoves(GetSlidingMoves(chessBoard, i), moves, i);
+                        break;
+                    case (int)PieceType.Knight:
+                        //get Knight Moves
+                        AddMoves(GetKnightHops(chessBoard, i), moves, i);
+                        break;
+                    case (int)PieceType.Queen:
+                        //get Queen Moves
+                        AddMoves(GetSlidingMoves(chessBoard, i), moves, i);
+                        break;
+                    case (int)PieceType.King:
+                        //get King Moves
+                        AddMoves(GetKingMoves(chessBoard, i), moves, i);
                         break;
                     default:
                         break;
                 }
             }
-
             return moves;
         }
 
@@ -147,6 +173,109 @@ namespace ChessBotBackEnd.Helpers
             }
 
             return moves.ToArray();
+        }
+    
+        public static int[] GetKingMoves(Board board,int Pos)
+        {
+            List<int> moves = new List<int>();
+
+            // Define all possible king move offsets
+            int[] kingOffsets = { 1, -1, 8, -8, 9, 7, -9, -7 };
+
+            int currentRow = Pos / 8;
+            int currentCol = Pos % 8;
+
+            foreach (int offset in kingOffsets)
+            {
+                int target = Pos + offset;
+
+                // Out of bounds check
+                if (target < 0 || target > 63)
+                    continue;
+
+                int targetRow = target / 8;
+                int targetCol = target % 8;
+
+                // Check for horizontal wrapping (left or right edge of the board)
+                if (Math.Abs(currentCol - targetCol) > 1)
+                    continue;
+
+                // If the square is occupied by a friendly piece, ignore it
+                int pieceAtTarget = board.getSquare(target);
+                if (pieceAtTarget != 0)
+                {
+                    // Check if the piece is friendly (same color as the king)
+                    if ((board.getTurn() == (int)PieceColour.White && pieceAtTarget > (int)PieceColour.Black) ||
+                        (board.getTurn() == (int)PieceColour.Black && pieceAtTarget <= (int)PieceColour.Black))
+                    {
+                        continue; // Can't move to a square occupied by a friendly piece
+                    }
+                }
+
+                // Add valid move
+                moves.Add(target);
+            }
+
+            return moves.ToArray();
+        }
+        
+        public static int[] GetPawnMoves(Board board,int Pos)
+        {
+            List<int> moves = new List<int>();
+
+            int piece = board.getSquare(Pos);
+            bool isWhite = piece > (int)PieceColour.Black;
+            int direction = isWhite ? -8 : 8; // White moves "up" (-8), black moves "down" (+8)
+            int currentRow = Pos / 8;
+            int currentCol = Pos % 8;
+
+            int forwardOne = Pos + direction;
+            if (forwardOne >= 0 && forwardOne <= 63 && board.getSquare(forwardOne) == 0) // Ensure it's within bounds and the square is empty
+            {
+                moves.Add(forwardOne);
+
+                if ((isWhite && currentRow == 6) || (!isWhite && currentRow == 1)) // White pawns start at row 6, black pawns at row 1
+                {
+                    int forwardTwo = Pos + 2 * direction;
+                    if (board.getSquare(forwardTwo) == 0) // Both squares must be empty
+                    {
+                        moves.Add(forwardTwo);
+                    }
+                }
+            }
+
+            int[] diagonalOffsets = { direction - 1, direction + 1 }; // Left and right diagonal moves
+            foreach (int offset in diagonalOffsets)
+            {
+                int diagonalTarget = Pos + offset;
+                int targetRow = diagonalTarget / 8;
+                int targetCol = diagonalTarget % 8;
+
+                // Ensure diagonal move doesn't wrap across the board horizontally
+                if (diagonalTarget >= 0 && diagonalTarget <= 63 && Math.Abs(currentCol - targetCol) == 1)
+                {
+                    int pieceAtTarget = board.getSquare(diagonalTarget);
+
+                    // Check if an enemy piece is there to capture
+                    if (pieceAtTarget != 0 &&
+                       ((isWhite && pieceAtTarget <= (int)PieceColour.Black) || // White captures black
+                        (!isWhite && pieceAtTarget > (int)PieceColour.Black)))   // Black captures white
+                    {
+                        moves.Add(diagonalTarget);
+                    }
+                }
+            }
+
+            // Return the list of possible moves as an array
+            return moves.ToArray();
+        }
+
+        private static void AddMoves(int[] moves, List<Move> List,int Pos)
+        {
+            foreach (int move in moves)
+            {
+                List.Add(new Move(Pos, move));
+            }
         }
     }
 }

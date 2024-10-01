@@ -10,5 +10,11 @@ namespace ChessBotBackEnd.Helpers
     {
         private int StartSquare;
         private int EndSquare;
+
+        public Move(int start,int end)
+        {
+            this.StartSquare = start;
+            this.EndSquare = end;  
+        }
     }
 }

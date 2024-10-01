@@ -2,10 +2,9 @@
 using ChessBotBackEnd.Helpers;
 using System.Net;
 
-Board chessBoard = new Board("///2pK4////");
+Board chessBoard = new Board();
 chessBoard.PrintBoard();
 Console.WriteLine("\n");
-chessBoard.NumberPrint();
-Utils.GetKnightHops(chessBoard, 27);
+Utils.LegalMoves(chessBoard);
 Console.ReadLine();
 
