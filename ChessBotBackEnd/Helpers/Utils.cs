@@ -214,8 +214,8 @@ namespace ChessBotBackEnd.Helpers
                 if (pieceAtTarget != 0)
                 {
                     // Check if the piece is friendly (same color as the king)
-                    if ((board.getTurn() == (int)PieceColour.White && pieceAtTarget > (int)PieceColour.Black) ||
-                        (board.getTurn() == (int)PieceColour.Black && pieceAtTarget <= (int)PieceColour.Black))
+                    if ((board.getTurn() == (int)PieceColour.White && pieceAtTarget < (int)PieceColour.Black) ||
+                        (board.getTurn() == (int)PieceColour.Black && pieceAtTarget >= (int)PieceColour.Black))
                     {
                         continue; // Can't move to a square occupied by a friendly piece
                     }
