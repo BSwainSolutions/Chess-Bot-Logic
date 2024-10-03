@@ -165,18 +165,20 @@ namespace ChessBotBackEnd.Helpers
                     continue;
 
                 // If the square is occupied by a friendly piece, ignore it
-                int pieceAtTarget = board.getSquare(target);
-                if (pieceAtTarget != 0)
+                if (board.getSquare(target) == 0)
                 {
-                    if ((board.getTurn() == (int)PieceColour.White && pieceAtTarget > (int)PieceColour.Black) ||
-                        (board.getTurn() == (int)PieceColour.Black && pieceAtTarget <= (int)PieceColour.Black))
-                    {
-                        continue; // Can't move to a square occupied by a friendly piece
-                    }
+                    moves.Add(target);
+                }
+                if (board.getSquare(target) > (int)PieceColour.Black && board.getTurn() == (int)PieceColour.White)
+                {
+                    moves.Add(target); // Can capture enemy piece
+                }
+                else if (board.getSquare(target) <= (int)PieceColour.Black && board.getTurn() == (int)PieceColour.Black)
+                {
+                    moves.Add(target); // Can capture enemy piece
                 }
 
-                // Add valid move
-                moves.Add(target);
+                // do nothing //b
             }
 
             return moves.ToArray();
