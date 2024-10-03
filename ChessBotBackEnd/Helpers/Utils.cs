@@ -230,16 +230,53 @@ namespace ChessBotBackEnd.Helpers
         
         public static int[] GetPawnMoves(Board board,int Pos)
         {
-            List<int> Moves = new List<int>();
-            int Piece = board.getSquare(Pos);
+            List<int> moves = new List<int>();
+
+            int piece = board.getSquare(Pos);
+            bool isWhite = piece > (int)PieceColour.Black;
+            int direction = isWhite ? -8 : 8; // White moves "up" (-8), black moves "down" (+8)
             int currentRow = Pos / 8;
             int currentCol = Pos % 8;
-            // is true if piece is lower than the value of black
-            bool isWhite = Piece < (int)PieceColour.Black;
-            //sets direction to -8 if white and 8 if black
-            int Direction = isWhite ? -8 : 8;
 
-            return Moves.ToArray();
+            int forwardOne = Pos + direction;
+            if (forwardOne >= 0 && forwardOne <= 63 && board.getSquare(forwardOne) == 0) // Ensure it's within bounds and the square is empty
+            {
+                moves.Add(forwardOne);
+
+                if ((isWhite && currentRow == 6) || (!isWhite && currentRow == 1)) // White pawns start at row 6, black pawns at row 1
+                {
+                    int forwardTwo = Pos + 2 * direction;
+                    if (board.getSquare(forwardTwo) == 0) // Both squares must be empty
+                    {
+                        moves.Add(forwardTwo);
+                    }
+                }
+            }
+
+            int[] diagonalOffsets = { direction - 1, direction + 1 }; // Left and right diagonal moves
+            foreach (int offset in diagonalOffsets)
+            {
+                int diagonalTarget = Pos + offset;
+                int targetRow = diagonalTarget / 8;
+                int targetCol = diagonalTarget % 8;
+
+                // Ensure diagonal move doesn't wrap across the board horizontally
+                if (diagonalTarget >= 0 && diagonalTarget <= 63 && Math.Abs(currentCol - targetCol) == 1)
+                {
+                    int pieceAtTarget = board.getSquare(diagonalTarget);
+
+                    // Check if an enemy piece is there to capture
+                    if (pieceAtTarget != 0 &&
+                       ((isWhite && pieceAtTarget <= (int)PieceColour.Black) || // White captures black
+                        (!isWhite && pieceAtTarget > (int)PieceColour.Black)))   // Black captures white
+                    {
+                        moves.Add(diagonalTarget);
+                    }
+                }
+            }
+
+            // Return the list of possible moves as an array
+            return moves.ToArray();
         }
 
         private static void AddMoves(int[] moves, List<Move> List,int Pos)
