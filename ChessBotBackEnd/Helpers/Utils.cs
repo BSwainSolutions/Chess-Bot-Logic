@@ -10,7 +10,7 @@ using System.Xml;
 
 namespace ChessBotBackEnd.Helpers
 {
-    internal static class Utils
+    public class Utils
     {
         //Direction of Horizontal And Vetical Moves //
 
