@@ -47,20 +47,16 @@ namespace ChessBotBackEnd.BoardAndPieces
 
         public void MovePiece(int start, int end)
         {
-            if (IsLegalMove(start, end))
-            {
-                boardArr[end] = boardArr[start];
-                boardArr[start] = 0;
+            boardArr[end] = boardArr[start];
+            boardArr[start] = 0;
 
-                if (turn == PieceColour.White)
-                {
-                    turn = PieceColour.Black;
-                }
-                else
-                {
-                    turn = PieceColour.White;
-                }
-                return;
+            if (turn == PieceColour.White)
+            {
+                turn = PieceColour.Black;
+            }
+            else
+            {
+                turn = PieceColour.White;
             }
             return;
         }
@@ -83,15 +79,14 @@ namespace ChessBotBackEnd.BoardAndPieces
             // UPPERCASE BEING WHITE 
             // LOWERCASE BEING BLACK
 
-            int rank = 0;
+            int rank = 7;
             int file = 0;
-            int placement = 0;
             foreach (char c in fen)
             {
                 if (c == '/')
                 {
                     //indicates the end of a row //
-                    rank++;
+                    rank--;
                     file = 0;
                 }
                 else if (c == ' ')
@@ -100,7 +95,7 @@ namespace ChessBotBackEnd.BoardAndPieces
                 }
                 else if (char.IsDigit(c))
                 {
-                    file += (int)char.GetNumericValue(c); // skip empty squares
+                    file -= (int)char.GetNumericValue(c); // skip empty squares
                 }
                 else
                 {
@@ -201,12 +196,11 @@ namespace ChessBotBackEnd.BoardAndPieces
 
         public void NumberPrint()
         {
-            for (int i = 63; i >= 0; i--)
+            Console.Write("|");
+            for (int i = 0; i < 64; i++)
             {
-                if (i % 8 == 7)  // Start a new row
-                {
-                    Console.Write("|");
-                }
+                if (i % 8 == 0 && i != 0)
+                    Console.Write("\n|");
 
                 // Switch to determine what to print based on the boardArr
                 switch (boardArr[i])
@@ -255,10 +249,10 @@ namespace ChessBotBackEnd.BoardAndPieces
                 }
                 Console.Write(i.ToString().PadRight(5));
 
-                if (i % 8 == 0)  // End the row and start a new one
-                {
-                    Console.WriteLine();  // New line at the end of the row
-                }
+                //if (i % 8 == 0)  // End the row and start a new one
+                //{
+                //    Console.WriteLine();  // New line at the end of the row
+                //}
             }
         }
     }
