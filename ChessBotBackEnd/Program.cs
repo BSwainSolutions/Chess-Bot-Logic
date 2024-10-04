@@ -12,9 +12,9 @@ for (int i = 0; i < 10; i++)
     bool move = false;
     int SS;
     int ES;
-    List<Move> moves = Utils.LegalMoves(chessBoard);
     while(!move)
     {
+        List<Move> moves = Utils.LegalMoves(chessBoard);
         chessBoard.NumberPrint();
         Console.WriteLine("What is ur starting square");
         Utils.printLegalMoves(moves);

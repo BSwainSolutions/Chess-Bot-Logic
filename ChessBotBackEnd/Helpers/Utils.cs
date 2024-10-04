@@ -168,14 +168,17 @@ namespace ChessBotBackEnd.Helpers
                 if (board.getSquare(target) == 0)
                 {
                     moves.Add(target);
+                    continue;
                 }
                 if (board.getSquare(target) > (int)PieceColour.Black && board.getTurn() == (int)PieceColour.White)
                 {
                     moves.Add(target); // Can capture enemy piece
+                    continue;
                 }
                 else if (board.getSquare(target) <= (int)PieceColour.Black && board.getTurn() == (int)PieceColour.Black)
                 {
                     moves.Add(target); // Can capture enemy piece
+                    continue;
                 }
 
                 // do nothing //b
