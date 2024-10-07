@@ -11,24 +11,23 @@ namespace ChessBotBackEnd.BoardAndPieces
     public class Board
     {
         private int EnPassantSquare = -1;
+        
+        private bool HasWhiteKingMoved;
+        private bool HasBlackKingMoved;
+        private bool HasWhiteKingSideRookMoved;
+        private bool HasWhiteQueenSideRookMoved;
+        private bool HasBlackKingSideRookMoved;
+        private bool HasBlackQueenSideRookMoved;
+
         private int[] boardArr;
         private PieceColour turn;
         private readonly string startingPos = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
         private readonly string TestPos = "4k3/8/8/3Q4/8/8/8/q3K3";
         private int[][] LegalMoves;
 
-        public int[] getBoard()
-        {
-            return this.boardArr;
-        }
-
         public int getEnPassantSqaure()
         {
             return this.EnPassantSquare;
-        }
-        public void setEnPassantSqaure(int target)
-        {
-            this.EnPassantSquare = target;
         }
         public int getTurn()
         {
@@ -54,8 +53,90 @@ namespace ChessBotBackEnd.BoardAndPieces
             return this.boardArr[target];
         }
 
+        private void IfCastlingPieceMoved(int start)
+        {
+            switch (start)
+            {
+                case 0:
+                    this.HasWhiteQueenSideRookMoved = true;
+                    break;
+                case 7:
+                    this.HasWhiteKingSideRookMoved = true;
+                    break;
+                case 4:
+                    this.HasWhiteKingMoved = true;
+                    break;
+                case 56:
+                    this.HasBlackQueenSideRookMoved = true;
+                    break;
+                case 60:
+                    this.HasBlackKingMoved = true;  
+                    break;
+                case 63:
+                    this.HasBlackKingSideRookMoved = true; 
+                    break;
+                default:
+                    break;
+            }
+
+            return;
+        }
+
+        public bool HasKingMoved(int Turn)
+        {
+            if(Turn == (int)PieceColour.White && HasWhiteKingMoved)
+            { 
+                return true;                
+            }
+            if(Turn == (int)PieceColour.Black && HasBlackKingMoved)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool HasRookMoved(bool isKingSide)
+        {
+            if(turn == PieceColour.White)
+            {
+                switch(isKingSide) 
+                {
+                    case true:
+                        return HasWhiteKingSideRookMoved;
+                    case false:
+                        return HasWhiteQueenSideRookMoved;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                switch(isKingSide)
+                {
+                    case true:
+                        return HasBlackKingSideRookMoved;
+                    case false:
+                        return HasBlackQueenSideRookMoved;
+                    default:
+                        break;
+                }
+            }
+
+            return false;
+        }
+
+        public bool isSquareUnderAttack(int Square)
+        {
+            return false;
+        }
         public void MovePiece(int start, int end)
         {
+            // update private vars regarding castling rules
+            IfCastlingPieceMoved(start);
+            
+
+
             int WhiteOrBlackMove = (this.turn == PieceColour.White) ? 8 : -8;
 
             if (end == this.EnPassantSquare)
@@ -76,9 +157,24 @@ namespace ChessBotBackEnd.BoardAndPieces
                 this.EnPassantSquare = -1;
             }
             
-
-            boardArr[end] = boardArr[start];
-            boardArr[start] = 0;
+            //if its a king and its moved two squares
+            if(getSquare(start) % 8 == 6 && Math.Abs(start - end) == 2)
+            {
+                boardArr[end] = boardArr[start];
+                boardArr[start] = 0;
+                // king side castling
+                if(end > start)
+                {
+                    boardArr[start + 1] = boardArr[end+1];
+                    boardArr[end + 1] = 0;
+                }
+                else
+                {
+                    boardArr[start - 1] = boardArr[end - 2];
+                    boardArr[end - 2] = 0;
+                }
+            }
+            
 
             if (turn == PieceColour.White)
             {

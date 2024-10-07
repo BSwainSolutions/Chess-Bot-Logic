@@ -228,9 +228,50 @@ namespace ChessBotBackEnd.Helpers
                 moves.Add(target);
             }
 
+            //add castling move //
+            AddCastlingMoves(board, Pos, moves);
+
             return moves.ToArray();
         }
         
+        public static void AddCastlingMoves(Board board, int KingPos, List<int> Moves)
+        {
+            if(board.HasKingMoved(board.getTurn()))
+            {
+                return;
+            }
+
+            if (CanCastle(board, KingPos, true))
+            {
+                Moves.Add(KingPos + 2);
+            }
+            if (CanCastle(board, KingPos, false))
+            {
+                Moves.Add(KingPos - 2);
+            }
+
+            return;
+        }
+
+        private static bool CanCastle(Board board, int KingPos, bool IsKingSide)
+        {
+
+
+            int rookStartPos = IsKingSide ? KingPos+ 3 : KingPos - 4;
+            int moveOffset = IsKingSide ? 2 : -2;
+            int[] path = IsKingSide ? new int[] { KingPos + 1, KingPos + 2 } : new int[] { KingPos - 1, KingPos - 2, KingPos - 3 };
+
+            if (board.HasRookMoved(IsKingSide))
+                return false;
+
+            // Check if any square in the path is under attack
+            foreach (int square in path)
+            {
+                if (board.isSquareUnderAttack(square)) return false;
+            }
+
+            return true;  // Castling is possible
+        }
         public static int[] GetPawnMoves(Board board,int Pos)
         {
             List<int> moves = new List<int>();
