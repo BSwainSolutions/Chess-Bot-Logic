@@ -10,6 +10,7 @@ namespace ChessBotBackEnd.BoardAndPieces
 
     public class Board
     {
+        private int EnPassantSquare = -1;
         private int[] boardArr;
         private PieceColour turn;
         private readonly string startingPos = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
@@ -21,6 +22,14 @@ namespace ChessBotBackEnd.BoardAndPieces
             return this.boardArr;
         }
 
+        public int getEnPassantSqaure()
+        {
+            return this.EnPassantSquare;
+        }
+        public void setEnPassantSqaure(int target)
+        {
+            this.EnPassantSquare = target;
+        }
         public int getTurn()
         {
             return (int)this.turn;
@@ -47,6 +56,27 @@ namespace ChessBotBackEnd.BoardAndPieces
 
         public void MovePiece(int start, int end)
         {
+            int WhiteOrBlackMove = (this.turn == PieceColour.White) ? 8 : -8;
+
+            if (end == this.EnPassantSquare)
+            {
+                boardArr[end - WhiteOrBlackMove] = 0;
+                //remove piece from square.
+            }
+
+
+            //add logic for moving a pawn two off the starting rank and set the enpassant square
+            if (getSquare(start) % 8 == (int)PieceType.Pawn && Math.Abs(end - start) == 16)
+            {
+                
+                this.EnPassantSquare = end - WhiteOrBlackMove;
+            }
+            else
+            {
+                this.EnPassantSquare = -1;
+            }
+            
+
             boardArr[end] = boardArr[start];
             boardArr[start] = 0;
 

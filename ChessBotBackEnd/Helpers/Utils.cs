@@ -236,8 +236,8 @@ namespace ChessBotBackEnd.Helpers
             List<int> moves = new List<int>();
 
             int piece = board.getSquare(Pos);
-            bool isWhite = piece > (int)PieceColour.Black;
-            int direction = isWhite ? -8 : 8; // White moves "up" (-8), black moves "down" (+8)
+            bool isWhite = piece < (int)PieceColour.Black;
+            int direction = isWhite ? 8 : -8; // White moves "up" (-8), black moves "down" (+8)
             int currentRow = Pos / 8;
             int currentCol = Pos % 8;
 
@@ -246,7 +246,7 @@ namespace ChessBotBackEnd.Helpers
             {
                 moves.Add(forwardOne);
 
-                if ((isWhite && currentRow == 6) || (!isWhite && currentRow == 1)) // White pawns start at row 6, black pawns at row 1
+                if ((isWhite && currentRow == 1) || (!isWhite && currentRow == 6)) // White pawns start at row 6, black pawns at row 1
                 {
                     int forwardTwo = Pos + 2 * direction;
                     if (board.getSquare(forwardTwo) == 0) // Both squares must be empty
@@ -267,13 +267,18 @@ namespace ChessBotBackEnd.Helpers
                 if (diagonalTarget >= 0 && diagonalTarget <= 63 && Math.Abs(currentCol - targetCol) == 1)
                 {
                     int pieceAtTarget = board.getSquare(diagonalTarget);
-
+                    if(board.getEnPassantSqaure() == diagonalTarget)
+                    {
+                        moves.Add(diagonalTarget);
+                        continue;
+                    }
                     // Check if an enemy piece is there to capture
                     if (pieceAtTarget != 0 &&
                        ((isWhite && pieceAtTarget <= (int)PieceColour.Black) || // White captures black
                         (!isWhite && pieceAtTarget > (int)PieceColour.Black)))   // Black captures white
                     {
                         moves.Add(diagonalTarget);
+                        continue;
                     }
                 }
             }
