@@ -134,8 +134,6 @@ namespace ChessBotBackEnd.BoardAndPieces
         {
             // update private vars regarding castling rules
             IfCastlingPieceMoved(start);
-            
-
 
             int WhiteOrBlackMove = (this.turn == PieceColour.White) ? 8 : -8;
 
@@ -144,7 +142,6 @@ namespace ChessBotBackEnd.BoardAndPieces
                 boardArr[end - WhiteOrBlackMove] = 0;
                 //remove piece from square.
             }
-
 
             //add logic for moving a pawn two off the starting rank and set the enpassant square
             if (getSquare(start) % 8 == (int)PieceType.Pawn && Math.Abs(end - start) == 16)
@@ -160,8 +157,6 @@ namespace ChessBotBackEnd.BoardAndPieces
             //if its a king and its moved two squares
             if(getSquare(start) % 8 == 6 && Math.Abs(start - end) == 2)
             {
-                boardArr[end] = boardArr[start];
-                boardArr[start] = 0;
                 // king side castling
                 if(end > start)
                 {
@@ -174,7 +169,10 @@ namespace ChessBotBackEnd.BoardAndPieces
                     boardArr[end - 2] = 0;
                 }
             }
-            
+
+            //otherwise move the piece
+            boardArr[end] = boardArr[start];
+            boardArr[start] = 0;
 
             if (turn == PieceColour.White)
             {

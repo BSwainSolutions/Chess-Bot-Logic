@@ -267,7 +267,7 @@ namespace ChessBotBackEnd.Helpers
             // Check if any square in the path is under attack
             foreach (int square in path)
             {
-                if (board.isSquareUnderAttack(square)) return false;
+                if (board.isSquareUnderAttack(square) || board.getSquare(square) != 0) return false;
             }
 
             return true;  // Castling is possible
