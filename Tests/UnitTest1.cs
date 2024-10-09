@@ -8,7 +8,7 @@ namespace Tests
         public void FirstPossibleMoves()
         {
             Board newBoard = new Board();
-            List<Move> list = Utils.LegalMoves(newBoard);
+            List<Move> list = Utils.LegalMoves(newBoard,newBoard.getTurn());
             Assert.Equal(list.Count,20);
         }
     }

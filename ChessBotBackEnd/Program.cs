@@ -14,7 +14,7 @@ for (int i = 0; i < 10; i++)
     int ES;
     while(!move)
     {
-        List<Move> moves = Utils.LegalMoves(chessBoard);
+        List<Move> moves = Utils.LegalMoves(chessBoard,chessBoard.getTurn());
         chessBoard.NumberPrint();
         Console.WriteLine("What is ur starting square");
         //Utils.printLegalMoves(moves);

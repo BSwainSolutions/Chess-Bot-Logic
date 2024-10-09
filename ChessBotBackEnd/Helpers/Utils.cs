@@ -14,21 +14,18 @@ namespace ChessBotBackEnd.Helpers
     {
         //Direction of Horizontal And Vetical Moves //
 
-        public static List<Move> LegalMoves(Board chessBoard)
+        public static List<Move> LegalMoves(Board chessBoard, int PieceTurn)
         {
             List<Move> moves = new List<Move>();
 
             //for each square on the board
             for(int i =0; i < 64; i++)
             {
-                if(chessBoard.getSquare(i) > (int)PieceColour.Black && chessBoard.getTurn() == (int)PieceColour.White)
+                if(isOppositeColour(chessBoard.getSquare(i),PieceTurn))
                 {
                     continue;
                 }
-                else if(chessBoard.getSquare(i) < (int)PieceColour.Black && chessBoard.getTurn() == (int)PieceColour.Black)
-                {
-                    continue;
-                }
+
                 //get its piecetype to switch on
                 int piece = chessBoard.getSquare(i) % 8;
                 
@@ -70,8 +67,8 @@ namespace ChessBotBackEnd.Helpers
 
         private static bool isOppositeColour(int PieceVal, int TargetVal)
         {
-            if (PieceVal < 8 && TargetVal > 8) return true;
-            else if (PieceVal > 8 && TargetVal < 8) return true;
+            if (PieceVal < 8 && TargetVal >= 8) return true;
+            else if (PieceVal > 8 && TargetVal <= 8) return true;
             return false;
         }
 
