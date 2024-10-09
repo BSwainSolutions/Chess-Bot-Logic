@@ -213,7 +213,7 @@ namespace ChessBotBackEnd.Helpers
                 if (pieceAtTarget != 0)
                 {
                     // Check if the piece is friendly (same color as the king)
-                    if (isOppositeColour(board.getSquare(Pos),board.getSquare(target)))
+                    if (!isOppositeColour(board.getSquare(Pos),board.getSquare(target)))
                     {
                         continue; // Can't move to a square occupied by a friendly piece
                     }
