@@ -68,6 +68,13 @@ namespace ChessBotBackEnd.Helpers
             return moves;
         }
 
+        private static bool isOppositeColour(int PieceVal, int TargetVal)
+        {
+            if (PieceVal < 8 && TargetVal > 8) return true;
+            else if (PieceVal > 8 && TargetVal < 8) return true;
+            return false;
+        }
+
         public static int[] GetSlidingMoves(Board board, int Pos)
         {
             List<int> moves = new List<int>();
@@ -120,11 +127,7 @@ namespace ChessBotBackEnd.Helpers
                     // If the target square is occupied, check if it's an enemy piece
                     if (board.getSquare(target) != 0)
                     {
-                        if (board.getSquare(target) > (int)PieceColour.Black && board.getTurn() == (int)PieceColour.White)
-                        {
-                            moves.Add(target); // Can capture enemy piece
-                        }
-                        else if (board.getSquare(target) <= (int)PieceColour.Black && board.getTurn() == (int)PieceColour.Black)
+                        if (isOppositeColour(board.getSquare(Pos),board.getSquare(target)))
                         {
                             moves.Add(target); // Can capture enemy piece
                         }
@@ -170,18 +173,11 @@ namespace ChessBotBackEnd.Helpers
                     moves.Add(target);
                     continue;
                 }
-                if (board.getSquare(target) > (int)PieceColour.Black && board.getTurn() == (int)PieceColour.White)
+                if (isOppositeColour(board.getSquare(Pos),board.getSquare(target)))
                 {
                     moves.Add(target); // Can capture enemy piece
                     continue;
                 }
-                else if (board.getSquare(target) <= (int)PieceColour.Black && board.getTurn() == (int)PieceColour.Black)
-                {
-                    moves.Add(target); // Can capture enemy piece
-                    continue;
-                }
-
-                // do nothing //b
             }
 
             return moves.ToArray();
@@ -217,8 +213,7 @@ namespace ChessBotBackEnd.Helpers
                 if (pieceAtTarget != 0)
                 {
                     // Check if the piece is friendly (same color as the king)
-                    if ((board.getTurn() == (int)PieceColour.White && pieceAtTarget < (int)PieceColour.Black) ||
-                        (board.getTurn() == (int)PieceColour.Black && pieceAtTarget >= (int)PieceColour.Black))
+                    if (isOppositeColour(board.getSquare(Pos),board.getSquare(target)))
                     {
                         continue; // Can't move to a square occupied by a friendly piece
                     }
@@ -315,8 +310,7 @@ namespace ChessBotBackEnd.Helpers
                     }
                     // Check if an enemy piece is there to capture
                     if (pieceAtTarget != 0 &&
-                       ((isWhite && pieceAtTarget <= (int)PieceColour.Black) || // White captures black
-                        (!isWhite && pieceAtTarget > (int)PieceColour.Black)))   // Black captures white
+                       isOppositeColour(board.getSquare(Pos),board.getSquare(diagonalTarget)))
                     {
                         moves.Add(diagonalTarget);
                         continue;
@@ -335,6 +329,19 @@ namespace ChessBotBackEnd.Helpers
                 List.Add(new Move(Pos, move));
             }
         }
+
+        public static int[] GetAttackedSqaures(Board board)
+        {
+            // for each piece that is not the teams colour
+            // all except pawns as they only attack diagonally
+            // get its legal moves as these are the squares it can attack
+            
+
+
+
+            return [];
+        }
+
 
         public static void printLegalMoves(List<Move> legalMoves)
         {

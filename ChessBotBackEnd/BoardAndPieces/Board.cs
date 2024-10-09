@@ -153,9 +153,14 @@ namespace ChessBotBackEnd.BoardAndPieces
             {
                 this.EnPassantSquare = -1;
             }
-            
+
+
+            //otherwise move the piece
+            boardArr[end] = boardArr[start];
+            boardArr[start] = 0;
+
             //if its a king and its moved two squares
-            if(getSquare(start) % 8 == 6 && Math.Abs(start - end) == 2)
+            if (getSquare(start) % 8 == 6 && Math.Abs(start - end) == 2)
             {
                 // king side castling
                 if(end > start)
@@ -170,9 +175,7 @@ namespace ChessBotBackEnd.BoardAndPieces
                 }
             }
 
-            //otherwise move the piece
-            boardArr[end] = boardArr[start];
-            boardArr[start] = 0;
+            
 
             if (turn == PieceColour.White)
             {

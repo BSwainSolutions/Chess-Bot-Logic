@@ -17,12 +17,11 @@ for (int i = 0; i < 10; i++)
         List<Move> moves = Utils.LegalMoves(chessBoard);
         chessBoard.NumberPrint();
         Console.WriteLine("What is ur starting square");
-        Utils.printLegalMoves(moves);
+        //Utils.printLegalMoves(moves);
         Console.WriteLine(moves.Count());
         SS = int.Parse(Console.ReadLine());
         Console.WriteLine("What is ur ending square");
         ES = int.Parse(Console.ReadLine());
-
         if (moves.Contains(new Move(SS,ES)))
         {
             chessBoard.MovePiece(SS, ES);
