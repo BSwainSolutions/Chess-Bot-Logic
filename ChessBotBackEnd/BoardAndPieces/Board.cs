@@ -22,7 +22,7 @@ namespace ChessBotBackEnd.BoardAndPieces
         private int[] boardArr;
         private PieceColour turn;
         private readonly string startingPos = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
-        private readonly string TestPos = "4k3/8/8/3Q4/8/8/8/q3K3";
+        //private readonly string TestPos = "4k3/8/8/3Q4/8/8/8/q3K3";
         private int[][] LegalMoves;
 
         public int getEnPassantSqaure()
@@ -222,7 +222,7 @@ namespace ChessBotBackEnd.BoardAndPieces
                 }
                 else if (char.IsDigit(c))
                 {
-                    file -= (int)char.GetNumericValue(c); // skip empty squares
+                    file += (int)char.GetNumericValue(c); // skip empty squares
                 }
                 else
                 {

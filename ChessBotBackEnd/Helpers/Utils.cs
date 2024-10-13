@@ -19,7 +19,7 @@ namespace ChessBotBackEnd.Helpers
             List<Move> moves = new List<Move>();
 
             //for each square on the board
-            for(int i =0; i < 64; i++)
+            for(int i = 0; i < 64; i++)
             {
                 if(isOppositeColour(chessBoard.getSquare(i),PieceTurn))
                 {
@@ -65,10 +65,11 @@ namespace ChessBotBackEnd.Helpers
             return moves;
         }
 
-        private static bool isOppositeColour(int PieceVal, int TargetVal)
+        private static bool isOppositeColour(int PieceVal, int turn)
         {
-            if (PieceVal < 8 && TargetVal >= 8) return true;
-            else if (PieceVal > 8 && TargetVal <= 8) return true;
+            if (turn == (int)PieceColour.Black && (PieceVal != 0 && PieceVal < 8)) return true;
+            else if (turn == (int)PieceColour.White && PieceVal > 8) return true;
+
             return false;
         }
 
@@ -332,11 +333,36 @@ namespace ChessBotBackEnd.Helpers
             // for each piece that is not the teams colour
             // all except pawns as they only attack diagonally
             // get its legal moves as these are the squares it can attack
+
+            //sets this to be the other colours turns value
+            HashSet<int> AttackedSqaure = new HashSet<int>();
+            int OppositeTurnInt = (board.getTurn() >= 8) ? 0 : 8;
             
+            List<Move> moves = new List<Move>();
+            moves = LegalMoves(board, OppositeTurnInt);
+            foreach (Move move in moves)
+            {
+                //if its not a pawn add possible move to attacked sqaures 
+                if(board.getSquare(move.StartSquare) % 8 !=  (int)PieceType.Pawn)
+                {
+                    AttackedSqaure.Add(move.EndSquare);
+                }
+                //otherwise only add the diagonals
+                else
+                {
+                    int[] diagonalOffset = (OppositeTurnInt < 8) ? new int[] { 7, 9 } : new int[] { -7, -9 };
+                    //if on the first column cant go left more
+                    if (move.StartSquare % 8 == 0) AttackedSqaure.Add(move.StartSquare + diagonalOffset[0]);
+                    else if (move.StartSquare % 8 == 7) AttackedSqaure.Add(move.StartSquare + diagonalOffset[1]);
+                    else
+                    {
+                        AttackedSqaure.Add(move.StartSquare + diagonalOffset[0]);
+                        AttackedSqaure.Add(move.StartSquare + diagonalOffset[1]);
+                    }
+                }
+            }
 
-
-
-            return [];
+            return AttackedSqaure.ToArray();
         }
 
 

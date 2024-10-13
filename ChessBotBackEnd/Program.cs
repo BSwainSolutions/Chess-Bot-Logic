@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 
 
-Board chessBoard = new Board();
+Board chessBoard = new Board("k7/8/6q1/8/3Q4/8/8/7K");
 for (int i = 0; i < 10; i++)
 {
     
@@ -18,6 +18,7 @@ for (int i = 0; i < 10; i++)
         chessBoard.NumberPrint();
         Console.WriteLine("What is ur starting square");
         //Utils.printLegalMoves(moves);
+        int[] AttackedSqaures = Utils.GetAttackedSqaures(chessBoard);
         Console.WriteLine(moves.Count());
         SS = int.Parse(Console.ReadLine());
         Console.WriteLine("What is ur ending square");
