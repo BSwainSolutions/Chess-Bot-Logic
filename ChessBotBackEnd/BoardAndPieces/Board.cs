@@ -220,7 +220,7 @@ namespace ChessBotBackEnd.BoardAndPieces
             // LOWERCASE BEING BLACK
             
             int rank = 7;
-            int file = 0;
+            int file = 7;
             foreach (char c in fen)
             {
                 bool isKing = false;
@@ -228,7 +228,7 @@ namespace ChessBotBackEnd.BoardAndPieces
                 {
                     //indicates the end of a row //
                     rank--;
-                    file = 0;
+                    file = 7;
                 }
                 else if (c == ' ')
                 {
@@ -236,7 +236,7 @@ namespace ChessBotBackEnd.BoardAndPieces
                 }
                 else if (char.IsDigit(c))
                 {
-                    file += (int)char.GetNumericValue(c); // skip empty squares
+                    file -= (int)char.GetNumericValue(c); // skip empty squares
                 }
                 else
                 {
@@ -280,7 +280,7 @@ namespace ChessBotBackEnd.BoardAndPieces
 
                     if (isKing) WKingSqaure = (rank*8) + file;
                     boardArr[rank * 8 + file] = currentPieceValue;
-                    file++;
+                    file--;
                 }
             }
         }
@@ -293,11 +293,6 @@ namespace ChessBotBackEnd.BoardAndPieces
                 for (int j = 7; j >= 0; j--)
                 {
                    
-                
-                    //if (i % 8 == 0 && i != 0)
-                     //   Console.Write("\n|");
-
-                    // Switch to determine what to print based on the boardArr
                     switch (boardArr[(i*8 + j)])
                     {
                         case 0:
@@ -343,11 +338,6 @@ namespace ChessBotBackEnd.BoardAndPieces
                             break;
                     }   
                     Console.Write(((i * 8) + j).ToString().PadRight(5));
-
-                    //if (i % 8 == 0)  // End the row and start a new one
-                    //{
-                    //    Console.WriteLine();  // New line at the end of the row
-                    //}
                 }
             }
         }
@@ -359,17 +349,29 @@ namespace ChessBotBackEnd.BoardAndPieces
 
         public bool DoesMoveCreateCheck(Move move)
         {
+            // UPDATE THE KING SQAURE 
+            // OTHERWISE ALL MOVES ARE LEGAL //
+
             //copy values of the starting moves
             bool IsChecked = false;
             int StartValue, EndValue;
+            int KingSquare = (this.turn == PieceColour.White) ? this.WKingSqaure : this.BKingSqaure;
             StartValue = this.getSquare(move.StartSquare); EndValue = this.getSquare(move.EndSquare);
 
-            this.boardArr[move.StartSquare] = 0;
-            this.boardArr[move.EndSquare] = StartValue;
-            int[] SqauresUnderAttack = Utils.GetAttackedSqaures(this);
-            //update king square // 
-            int KingSquare = (this.turn == PieceColour.White) ? this.WKingSqaure : this.BKingSqaure;
+            //is white king
+            if (boardArr[move.StartSquare] == (int)PieceType.King)
+            {
+                KingSquare = move.EndSquare;
+            }
+            else if (boardArr[move.StartSquare] == (int)PieceType.King + (int)PieceColour.Black)
+            {
+                KingSquare = move.EndSquare;
+            }
             
+
+            //this.boardArr[move.StartSquare] = 0;
+            //this.boardArr[move.EndSquare] = StartValue;
+            int[] SqauresUnderAttack = Utils.GetAttackedSqaures(this);
             //if its not in there
             if (SqauresUnderAttack.Contains(KingSquare)) IsChecked = true;
 

@@ -15,6 +15,7 @@ for (int i = 0; i < 10; i++)
     {
         chessBoard.NumberPrint();
         List<Move> moves = Utils.FilterLegalMoves(Utils.PossibleMoves(chessBoard,chessBoard.getTurn()),chessBoard);
+        Utils.PrintLegalMoves(moves);
         Console.WriteLine("What is ur starting square");
         //Utils.printLegalMoves(moves);
         Console.WriteLine(moves.Count());

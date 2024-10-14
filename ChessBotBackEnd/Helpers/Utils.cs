@@ -394,5 +394,14 @@ namespace ChessBotBackEnd.Helpers
             return AttackedSqaure.ToArray();
         }
 
+
+        public static void PrintLegalMoves(List<Move> list)
+        {
+            foreach (Move move in list)
+            {
+                Console.Out.WriteLine(move.StartSquare.ToString() + " - " + move.EndSquare.ToString());
+            }
+            return;
+        }
     }
 }
