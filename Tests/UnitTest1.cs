@@ -16,15 +16,16 @@ namespace Tests
         public void FirstMoveAttackedSqaures()
         {
             Board newBoard = new Board();
-            int[] attackedSqaures = Utils.GetAttackedSqaures(newBoard);
-            Assert.Equal(attackedSqaures.Length, 8);
+            Utils.UpdateAttackedSqaures(newBoard);
+            Assert.Equal(8, newBoard.getAttackedSqaures().Length);
         }
+
         [Fact]
         public void QueenAttackedSqaures()
         {
             Board newBoard = new Board("k7/8/6q1/8/3Q4/8/8/7K");
-            int[] attackedSqaures = Utils.GetAttackedSqaures(newBoard);
-            Assert.Equal(attackedSqaures.Length, 26);
+            Utils.UpdateAttackedSqaures(newBoard);
+            Assert.Equal(26, newBoard.getAttackedSqaures().Length);
         }
     }
 }

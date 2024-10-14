@@ -11,7 +11,7 @@ namespace ChessBotBackEnd.BoardAndPieces
     public class Board
     {
         private int EnPassantSquare = -1;
-        
+        private int[] AttackedSquares;
         private bool HasWhiteKingMoved;
         private bool HasBlackKingMoved;
         private bool HasWhiteKingSideRookMoved;
@@ -34,18 +34,29 @@ namespace ChessBotBackEnd.BoardAndPieces
             return (int)this.turn;
         }
 
+        public void setAttackedSqaures(int[] squareList)
+        {
+            this.AttackedSquares = squareList;
+        }
+        public int[] getAttackedSqaures()
+        {
+            return this.AttackedSquares;
+        }
+
         //general constructor for a new game 
         public Board()
-        {
+        { 
             boardArr = new int[64];
             // populate board
             PopulateBoardUsingFEN(startingPos);
+            
         }
 
         public Board(string fen)
         {
             boardArr = new int[64];
             PopulateBoardUsingFEN(fen);
+            Utils.UpdateAttackedSqaures(this);
         }
 
         public int getSquare(int target)
@@ -128,6 +139,10 @@ namespace ChessBotBackEnd.BoardAndPieces
 
         public bool isSquareUnderAttack(int Square)
         {
+            if(this.AttackedSquares != null)
+            {
+                if (this.AttackedSquares.Contains(Square)) return true;
+            }
             return false;
         }
         public void MovePiece(int start, int end)
@@ -188,11 +203,6 @@ namespace ChessBotBackEnd.BoardAndPieces
             return;
         }
 
-        private bool IsLegalMove(int start, int end)
-        {
-            // TODO 
-            return true;
-        }
 
         private void PopulateBoardUsingFEN(string fen)
         {

@@ -328,7 +328,7 @@ namespace ChessBotBackEnd.Helpers
             }
         }
 
-        public static int[] GetAttackedSqaures(Board board)
+        public static void UpdateAttackedSqaures(Board board)
         {
             // for each piece that is not the teams colour
             // all except pawns as they only attack diagonally
@@ -361,8 +361,8 @@ namespace ChessBotBackEnd.Helpers
                     }
                 }
             }
-
-            return AttackedSqaure.ToArray();
+            board.setAttackedSqaures(AttackedSqaure.ToArray());
+            return;
         }
 
 
