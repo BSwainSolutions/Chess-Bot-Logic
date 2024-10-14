@@ -5,17 +5,16 @@ using System.Runtime.CompilerServices;
 
 
 
-Board chessBoard = new Board();
+Board chessBoard = new Board("4q3/8/2k2K2/8/8/8/8/8");
 for (int i = 0; i < 10; i++)
 {
-    
     bool move = false;
     int SS;
     int ES;
     while(!move)
     {
-        List<Move> moves = Utils.FilterLegalMoves(Utils.PossibleMoves(chessBoard,chessBoard.getTurn()),chessBoard);
         chessBoard.NumberPrint();
+        List<Move> moves = Utils.FilterLegalMoves(Utils.PossibleMoves(chessBoard,chessBoard.getTurn()),chessBoard);
         Console.WriteLine("What is ur starting square");
         //Utils.printLegalMoves(moves);
         Console.WriteLine(moves.Count());

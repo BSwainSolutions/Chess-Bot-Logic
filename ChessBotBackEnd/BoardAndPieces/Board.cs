@@ -218,11 +218,12 @@ namespace ChessBotBackEnd.BoardAndPieces
             // k - king
             // UPPERCASE BEING WHITE 
             // LOWERCASE BEING BLACK
-
+            
             int rank = 7;
             int file = 0;
             foreach (char c in fen)
             {
+                bool isKing = false;
                 if (c == '/')
                 {
                     //indicates the end of a row //
@@ -256,6 +257,7 @@ namespace ChessBotBackEnd.BoardAndPieces
                             break;
                         case 'k':
                             currentPieceValue += (int)PieceType.King;
+                            isKing = true;
                             break;
                         case 'p':
                             currentPieceValue += (int)PieceType.Pawn;
@@ -269,9 +271,14 @@ namespace ChessBotBackEnd.BoardAndPieces
                     // if its lower case its black so add eight // 
                     if (char.IsLower(c))
                     {
+                        if(isKing)
+                        {
+                            this.BKingSqaure = (rank*8) + file;
+                        }
                         currentPieceValue += 8;
                     }
 
+                    if (isKing) WKingSqaure = (rank*8) + file;
                     boardArr[rank * 8 + file] = currentPieceValue;
                     file++;
                 }
@@ -280,7 +287,7 @@ namespace ChessBotBackEnd.BoardAndPieces
         public void NumberPrint()
         {
             Console.Write("|");
-            for (int i = 0; i < 64; i++)
+            for (int i = 63; i >= 0; i--)
             {
                 if (i % 8 == 0 && i != 0)
                     Console.Write("\n|");
@@ -354,6 +361,7 @@ namespace ChessBotBackEnd.BoardAndPieces
             this.boardArr[move.StartSquare] = 0;
             this.boardArr[move.EndSquare] = StartValue;
             int[] SqauresUnderAttack = Utils.GetAttackedSqaures(this);
+            //update king square // 
             int KingSquare = (this.turn == PieceColour.White) ? this.WKingSqaure : this.BKingSqaure;
             
             //if its not in there

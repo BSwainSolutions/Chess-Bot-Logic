@@ -27,5 +27,13 @@ namespace Tests
             //Utils.GetAttackedSqaures(newBoard);
             //Assert.Equal(26, newBoard.getAttackedSqaures().Length);
         }
+
+        [Fact]
+        public void TestForCheck()
+        {
+            Board newB = new Board("4q3/8/2k2K2/8/8/8/8/8");
+            List<Move> legalMoves = Utils.FilterLegalMoves(Utils.PossibleMoves(newB, (int)PieceColour.White), newB);
+            Assert.Equal(3,legalMoves.Count);
+        }
     }
 }
