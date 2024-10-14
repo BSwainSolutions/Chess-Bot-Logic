@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,19 +12,18 @@ namespace ChessBotBackEnd.BoardAndPieces
     public class Board
     {
         private int EnPassantSquare = -1;
-        private int[] AttackedSquares;
+        private int WKingSqaure,BKingSqaure;
         private bool HasWhiteKingMoved;
         private bool HasBlackKingMoved;
         private bool HasWhiteKingSideRookMoved;
         private bool HasWhiteQueenSideRookMoved;
         private bool HasBlackKingSideRookMoved;
         private bool HasBlackQueenSideRookMoved;
-
+        private int[] AttackedSquares;
         private int[] boardArr;
         private PieceColour turn;
         private readonly string startingPos = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
         //private readonly string TestPos = "4k3/8/8/3Q4/8/8/8/q3K3";
-        private int[][] LegalMoves;
 
         public int getEnPassantSqaure()
         {
@@ -33,7 +33,6 @@ namespace ChessBotBackEnd.BoardAndPieces
         {
             return (int)this.turn;
         }
-
         public void setAttackedSqaures(int[] squareList)
         {
             this.AttackedSquares = squareList;
@@ -49,21 +48,24 @@ namespace ChessBotBackEnd.BoardAndPieces
             boardArr = new int[64];
             // populate board
             PopulateBoardUsingFEN(startingPos);
-            
+            for(int i =0; i<64; i++)
+            {
+                if (boardArr[i] == (int)PieceType.King) WKingSqaure = i;
+                else if (boardArr[i] == (int)PieceType.King + (int)PieceColour.Black) BKingSqaure = i;
+            }
         }
 
         public Board(string fen)
         {
             boardArr = new int[64];
             PopulateBoardUsingFEN(fen);
-            Utils.UpdateAttackedSqaures(this);
+            Utils.GetAttackedSqaures(this);
         }
-
+        
         public int getSquare(int target)
         {
             return this.boardArr[target];
         }
-
         private void IfCastlingPieceMoved(int start)
         {
             switch (start)
@@ -92,7 +94,6 @@ namespace ChessBotBackEnd.BoardAndPieces
 
             return;
         }
-
         public bool HasKingMoved(int Turn)
         {
             if(Turn == (int)PieceColour.White && HasWhiteKingMoved)
@@ -106,7 +107,6 @@ namespace ChessBotBackEnd.BoardAndPieces
 
             return false;
         }
-
         public bool HasRookMoved(bool isKingSide)
         {
             if(turn == PieceColour.White)
@@ -136,7 +136,6 @@ namespace ChessBotBackEnd.BoardAndPieces
 
             return false;
         }
-
         public bool isSquareUnderAttack(int Square)
         {
             if(this.AttackedSquares != null)
@@ -150,8 +149,14 @@ namespace ChessBotBackEnd.BoardAndPieces
             // update private vars regarding castling rules
             IfCastlingPieceMoved(start);
 
+            //update king sqaure//
+            if (start == this.WKingSqaure) WKingSqaure = end;
+            if (start == this.BKingSqaure) BKingSqaure = end;
+
+            //determin whos go it is
             int WhiteOrBlackMove = (this.turn == PieceColour.White) ? 8 : -8;
 
+            //enpassant take logic
             if (end == this.EnPassantSquare)
             {
                 boardArr[end - WhiteOrBlackMove] = 0;
@@ -161,7 +166,6 @@ namespace ChessBotBackEnd.BoardAndPieces
             //add logic for moving a pawn two off the starting rank and set the enpassant square
             if (getSquare(start) % 8 == (int)PieceType.Pawn && Math.Abs(end - start) == 16)
             {
-                
                 this.EnPassantSquare = end - WhiteOrBlackMove;
             }
             else
@@ -191,7 +195,7 @@ namespace ChessBotBackEnd.BoardAndPieces
             }
 
             
-
+            //change go
             if (turn == PieceColour.White)
             {
                 turn = PieceColour.Black;
@@ -200,10 +204,9 @@ namespace ChessBotBackEnd.BoardAndPieces
             {
                 turn = PieceColour.White;
             }
+
             return;
         }
-
-
         private void PopulateBoardUsingFEN(string fen)
         {
             //* populate the board //
@@ -274,63 +277,6 @@ namespace ChessBotBackEnd.BoardAndPieces
                 }
             }
         }
-
-        public void PrintBoard()
-        {
-            Console.Write("|");
-            for (int i = 0; i <64 ; i++)
-            {
-                if (i % 8 == 0 && i != 0) Console.Write("\n|");
-                //Console.Write("| ");
-                switch (boardArr[i])
-                {
-                    case 0:
-                        Console.Write(" ");
-                        break;
-                    case (int)PieceType.Pawn + (int)PieceColour.White:
-                        Console.Write("P");
-                        break;
-                    case (int)PieceType.Rook + (int)PieceColour.White:
-                        Console.Write("R");
-                        break;
-                    case (int)PieceType.Knight + (int)PieceColour.White:
-                        Console.Write("N");
-                        break;
-                    case (int)PieceType.Bishop + (int)PieceColour.White:
-                        Console.Write("B");
-                        break;
-                    case (int)PieceType.King + (int)PieceColour.White:
-                        Console.Write("K");
-                        break;
-                    case (int)PieceType.Queen + (int)PieceColour.White:
-                        Console.Write("Q");
-                        break;
-                    case (int)PieceType.Pawn + (int)PieceColour.Black:
-                        Console.Write("p");
-                        break;
-                    case (int)PieceType.Rook + (int)PieceColour.Black:
-                        Console.Write("r");
-                        break;
-                    case (int)PieceType.Knight + (int)PieceColour.Black:
-                        Console.Write("n");
-                        break;
-                    case (int)PieceType.Bishop + (int)PieceColour.Black:
-                        Console.Write("b");
-                        break;
-                    case (int)PieceType.King + (int)PieceColour.Black:
-                        Console.Write("k");
-                        break;
-                    case (int)PieceType.Queen + (int)PieceColour.Black:
-                        Console.Write("q");
-                        break;
-                    default:
-                        break;
-                }
-                Console.Write(" |");
-
-            }
-        }
-
         public void NumberPrint()
         {
             Console.Write("|");
@@ -391,6 +337,39 @@ namespace ChessBotBackEnd.BoardAndPieces
                 //    Console.WriteLine();  // New line at the end of the row
                 //}
             }
+        }
+        
+        public int[] GetBoard()
+        {
+            return this.boardArr;
+        }
+
+        public bool DoesMoveCreateCheck(Move move)
+        {
+            //copy values of the starting moves
+            bool IsChecked = false;
+            int StartValue, EndValue;
+            StartValue = this.getSquare(move.StartSquare); EndValue = this.getSquare(move.EndSquare);
+
+            this.boardArr[move.StartSquare] = 0;
+            this.boardArr[move.EndSquare] = StartValue;
+            int[] SqauresUnderAttack = Utils.GetAttackedSqaures(this);
+            int KingSquare = (this.turn == PieceColour.White) ? this.WKingSqaure : this.BKingSqaure;
+            
+            //if its not in there
+            if (SqauresUnderAttack.Contains(KingSquare)) IsChecked = true;
+
+            //reset board
+            this.boardArr[move.StartSquare] = StartValue;
+            this.boardArr[move.EndSquare] = EndValue;
+            
+            return IsChecked;
+        }
+        private bool inCheck()
+        {
+            if (turn == PieceColour.White && AttackedSquares.Contains(WKingSqaure)) return true;
+            if (turn == PieceColour.Black && AttackedSquares.Contains(BKingSqaure)) return true;
+            return false;
         }
     }
 }

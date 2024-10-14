@@ -14,7 +14,7 @@ namespace ChessBotBackEnd.Helpers
     {
         //Direction of Horizontal And Vetical Moves //
 
-        public static List<Move> LegalMoves(Board chessBoard, int PieceTurn)
+        public static List<Move> PossibleMoves(Board chessBoard, int PieceTurn)
         {
             List<Move> moves = new List<Move>();
 
@@ -62,7 +62,36 @@ namespace ChessBotBackEnd.Helpers
                         break;
                 }
             }
+
             return moves;
+        }
+        
+        public static List<Move> FilterLegalMoves(List<Move> moves, Board chessBoard)
+        {
+            //create a copy of the board
+            List<Move> movesToRemove = new List<Move>();
+            int[] boardCopy = chessBoard.GetBoard();
+            foreach (Move move in moves)
+            {
+
+                // make the move 
+                // see if the king is underattack //
+                // if its underattack not a legal move 
+                // if not under attack is a legal move // 
+
+                if (chessBoard.DoesMoveCreateCheck(move))
+                {
+                    movesToRemove.Add(move);
+                }
+            }
+
+            foreach (Move i in movesToRemove)
+            {
+                moves.Remove(i);
+            }
+
+            return moves;
+            //return board to origonal state //
         }
 
         private static bool isOppositeColour(int PieceVal, int turn)
@@ -265,6 +294,7 @@ namespace ChessBotBackEnd.Helpers
 
             return true;  // Castling is possible
         }
+        
         public static int[] GetPawnMoves(Board board,int Pos)
         {
             List<int> moves = new List<int>();
@@ -328,7 +358,7 @@ namespace ChessBotBackEnd.Helpers
             }
         }
 
-        public static void UpdateAttackedSqaures(Board board)
+        public static int[] GetAttackedSqaures(Board board)
         {
             // for each piece that is not the teams colour
             // all except pawns as they only attack diagonally
@@ -339,7 +369,7 @@ namespace ChessBotBackEnd.Helpers
             int OppositeTurnInt = (board.getTurn() >= 8) ? 0 : 8;
             
             List<Move> moves = new List<Move>();
-            moves = LegalMoves(board, OppositeTurnInt);
+            moves = PossibleMoves(board, OppositeTurnInt);
             foreach (Move move in moves)
             {
                 //if its not a pawn add possible move to attacked sqaures 
@@ -361,18 +391,8 @@ namespace ChessBotBackEnd.Helpers
                     }
                 }
             }
-            board.setAttackedSqaures(AttackedSqaure.ToArray());
-            return;
+            return AttackedSqaure.ToArray();
         }
 
-
-        public static void printLegalMoves(List<Move> legalMoves)
-        {
-            foreach (Move i in legalMoves)
-            {
-                Console.Out.WriteLine(i.StartSquare.ToString() + " -- " + i.EndSquare.ToString());
-                
-            }
-        }
     }
 }
