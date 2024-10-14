@@ -287,62 +287,68 @@ namespace ChessBotBackEnd.BoardAndPieces
         public void NumberPrint()
         {
             Console.Write("|");
-            for (int i = 63; i >= 0; i--)
+            for (int i = 7; i >= 0; i--)
             {
-                if (i % 8 == 0 && i != 0)
-                    Console.Write("\n|");
-
-                // Switch to determine what to print based on the boardArr
-                switch (boardArr[i])
+                Console.Write("\n| ");
+                for (int j = 7; j >= 0; j--)
                 {
-                    case 0:
-                        Console.Write(" ");
-                        break;
-                    case (int)PieceType.Pawn + (int)PieceColour.White:
-                        Console.Write("P");
-                        break;
-                    case (int)PieceType.Rook + (int)PieceColour.White:
-                        Console.Write("R");
-                        break;
-                    case (int)PieceType.Knight + (int)PieceColour.White:
-                        Console.Write("N");
-                        break;
-                    case (int)PieceType.Bishop + (int)PieceColour.White:
-                        Console.Write("B");
-                        break;
-                    case (int)PieceType.King + (int)PieceColour.White:
-                        Console.Write("K");
-                        break;
-                    case (int)PieceType.Queen + (int)PieceColour.White:
-                        Console.Write("Q");
-                        break;
-                    case (int)PieceType.Pawn + (int)PieceColour.Black:
-                        Console.Write("p");
-                        break;
-                    case (int)PieceType.Rook + (int)PieceColour.Black:
-                        Console.Write("r");
-                        break;
-                    case (int)PieceType.Knight + (int)PieceColour.Black:
-                        Console.Write("n");
-                        break;
-                    case (int)PieceType.Bishop + (int)PieceColour.Black:
-                        Console.Write("b");
-                        break;
-                    case (int)PieceType.King + (int)PieceColour.Black:
-                        Console.Write("k");
-                        break;
-                    case (int)PieceType.Queen + (int)PieceColour.Black:
-                        Console.Write("q");
-                        break;
-                    default:
-                        break;
-                }
-                Console.Write(i.ToString().PadRight(5));
+                   
+                
+                    //if (i % 8 == 0 && i != 0)
+                     //   Console.Write("\n|");
 
-                //if (i % 8 == 0)  // End the row and start a new one
-                //{
-                //    Console.WriteLine();  // New line at the end of the row
-                //}
+                    // Switch to determine what to print based on the boardArr
+                    switch (boardArr[(i*8 + j)])
+                    {
+                        case 0:
+                            Console.Write(" ");
+                            break;
+                        case (int)PieceType.Pawn + (int)PieceColour.White:
+                            Console.Write("P");
+                            break;
+                        case (int)PieceType.Rook + (int)PieceColour.White:
+                            Console.Write("R");
+                            break;
+                        case (int)PieceType.Knight + (int)PieceColour.White:
+                            Console.Write("N");
+                            break;
+                        case (int)PieceType.Bishop + (int)PieceColour.White:
+                            Console.Write("B");
+                            break;
+                        case (int)PieceType.King + (int)PieceColour.White:
+                            Console.Write("K");
+                            break;
+                        case (int)PieceType.Queen + (int)PieceColour.White:
+                            Console.Write("Q");
+                            break;
+                        case (int)PieceType.Pawn + (int)PieceColour.Black:
+                            Console.Write("p");
+                            break;
+                        case (int)PieceType.Rook + (int)PieceColour.Black:
+                            Console.Write("r");
+                            break;
+                        case (int)PieceType.Knight + (int)PieceColour.Black:
+                            Console.Write("n");
+                            break;
+                        case (int)PieceType.Bishop + (int)PieceColour.Black:
+                            Console.Write("b");
+                            break;
+                        case (int)PieceType.King + (int)PieceColour.Black:
+                            Console.Write("k");
+                            break;
+                        case (int)PieceType.Queen + (int)PieceColour.Black:
+                            Console.Write("q");
+                            break;
+                        default:
+                            break;
+                    }   
+                    Console.Write(((i * 8) + j).ToString().PadRight(5));
+
+                    //if (i % 8 == 0)  // End the row and start a new one
+                    //{
+                    //    Console.WriteLine();  // New line at the end of the row
+                    //}
+                }
             }
         }
         
